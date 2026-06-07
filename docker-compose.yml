@@ -1,0 +1,22 @@
+docker-compose.yml
+version: '3.8'
+
+services:
+  neuracoder-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./checkpoints:/app/checkpoints
+    environment:
+      - NEURACODER_MODEL_PATH=/app/checkpoints
+      - CUDA_VISIBLE_DEVICES=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
