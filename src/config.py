@@ -3,11 +3,11 @@ from typing import Optional, List
 
 @dataclass
 class NeuraCoderConfig:
-    """پیکربندی فوق‌پیشرفته NeuraCoder Pro - بهتر از Qwen3"""
+    
     
     # معماری
     vocab_size: int = 32000
-    hidden_size: int = 1024      # برای تست 150M، برای 3B به 2560 برسان
+    hidden_size: int = 1024    
     num_layers: int = 12
     num_heads: int = 12
     num_kv_heads: int = 4        # GQA
@@ -15,13 +15,13 @@ class NeuraCoderConfig:
     dropout: float = 0.1
     bias: bool = False
     
-    # MoE (پیشرفته با Qwen3-style load balancing)
+    # MoE 
     use_moe: bool = False         # برای 150M خاموش، برای بزرگتر True
     num_experts: int = 8
     top_k_experts: int = 2
     expert_capacity: int = 4
     moe_load_balancing_weight: float = 0.01
-    moe_router_z_loss_weight: float = 0.001   # Qwen3 style
+    moe_router_z_loss_weight: float = 0.001   # neura style
     moe_aux_loss_coef: float = 0.01
     
     # Normalization
