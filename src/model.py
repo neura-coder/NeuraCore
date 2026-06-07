@@ -5,9 +5,6 @@ import math
 from typing import Optional, Tuple, List
 from src.config import NeuraCoderConfig
 
-# ------------------------------------------------------------
-# 1. RMSNorm با cast به fp32 برای پایداری
-# ------------------------------------------------------------
 class RMSNorm(nn.Module):
     def __init__(self, dim: int, eps: float = 1e-6):
         super().__init__()
@@ -21,9 +18,6 @@ class RMSNorm(nn.Module):
         norm = x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps)
         return (norm * self.weight.float()).to(dtype)
 
-# ------------------------------------------------------------
-# 2. RoPE پیشرفته با پشتیبانی از مقیاس‌دهی طولانی
-# ------------------------------------------------------------
 class RoPE(nn.Module):
     def __init__(self, dim: int, max_seq_len: int = 8192, theta: float = 1000000.0):
         super().__init__()
@@ -58,9 +52,6 @@ def apply_rope(x, cos, sin):
     sin = sin.unsqueeze(0).unsqueeze(0)
     return (x * cos) + (rotate_half(x) * sin)
 
-# ------------------------------------------------------------
-# 3. Grouped-Query Attention با QK Norm و FlashAttention و پایداری fp32
-# ------------------------------------------------------------
 class GroupedQueryAttention(nn.Module):
     def __init__(self, config: NeuraCoderConfig, layer_idx: int):
         super().__init__()
@@ -126,9 +117,6 @@ class GroupedQueryAttention(nn.Module):
         attn_out = attn_out.transpose(1, 2).contiguous().view(batch, seq_len, -1)
         return self.o_proj(attn_out)
 
-# ------------------------------------------------------------
-# 4. SwiGLU با residual در fp32
-# ------------------------------------------------------------
 class SwiGLU(nn.Module):
     def __init__(self, config: NeuraCoderConfig):
         super().__init__()
@@ -149,9 +137,7 @@ class SwiGLU(nn.Module):
         else:
             return self.w3(F.silu(self.w1(x)) * self.w2(x))
 
-# ------------------------------------------------------------
-# 5. MoE با z-loss و load balancing پیشرفته (Qwen3 style)
-# ------------------------------------------------------------
+
 class MoELayer(nn.Module):
     def __init__(self, config: NeuraCoderConfig):
         super().__init__()
@@ -193,9 +179,6 @@ class MoELayer(nn.Module):
                     output[mask] += expert_out * w[mask].unsqueeze(-1)
         return output, z_loss + aux_loss
 
-# ------------------------------------------------------------
-# 6. Transformer Block با DeepNorm initialization
-# ------------------------------------------------------------
 class NeuraCoderBlock(nn.Module):
     def __init__(self, config: NeuraCoderConfig, layer_idx: int):
         super().__init__()
@@ -225,9 +208,6 @@ class NeuraCoderBlock(nn.Module):
         x = x + self.dropout(ffn_out) * self.alpha
         return x, moe_loss
 
-# ------------------------------------------------------------
-# 7. مدل اصلی NeuraCoder با تمام ترفندهای پایداری
-# ------------------------------------------------------------
 class NeuraCoder(nn.Module):
     def __init__(self, config: NeuraCoderConfig):
         super().__init__()
