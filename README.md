@@ -1,26 +1,3 @@
-# NeuraCore
-NeuraCore – A custom LLM architecture by Neuracoder. Better than Qwen3 in key stability tricks: QK Norm, DeepNorm, dynamic clipping, MoE with z-loss. Ready-to-deploy with FastAPI + Docker. Train from scratch or fine-tune for code.
-
-
----
-
-license: apache-2.0
-library_name: pytorch
-tags:
-
-* llm
-* transformer
-* code-generation
-* research
-* moe
-* gqa
-* flash-attention
-* neuracoder
-* ai-architecture
-* pytorch
-
----
-
 # 🧠 NeuraCoder Architecture
 
 **NeuraCoder** is a modern decoder-only Large Language Model (LLM) architecture developed by the **Neuracoder** research team.
